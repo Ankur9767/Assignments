@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        *{
+            margin: 0rem;
+        }
+        .container {
+            display: flex;
+        }
+        .container > div {
+            flex: 1;
+            padding: 10px;
+        }
+        .container > div:first-child {
+            background-color: lightblue;
+        }
+        .container > div:last-child {
+            background-color: lightgreen;
+        }
+        .item {
+            margin-bottom: 10px;
+            cursor: move;
+        }
+        .item.dragging {
+            opacity: 0.5;
+        }
+        .Navbar{
+            width: 100%;
+            margin: 0;
+            text-align: center;
+            background-color: rgb(182, 13, 182);
+            color: white;
+            height: 60px;
+            margin-bottom: 50px;
+        }
+        .Resetbtn{
+            text-align: center;
+            margin-left: 50%;
+            margin-top: 40px;
+            width: 100px;
+            border-radius: 20px;
+            background-color: rgb(182, 13, 182);
+            color: white;
+            height: 50px;
+        }
+        img{
+            width:200px;
+        }
+    </style>
+    <script>
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function drag(event) {
+            event.dataTransfer.setData("text", event.target.id);
+            event.target.classList.add("dragging");
+        }
+
+        function dragEnd(event) {
+            event.target.classList.remove("dragging");
+        }
+
+        function drop(event) {
+    event.preventDefault();
+    var data = event.dataTransfer.getData("text/plain"); // Get the dropped text data
+    var element = document.getElementById(data);
+
+    // Check if the dropped item is an image
+    if (element.tagName === "IMG") {
+        // Create a new div to hold the image
+        var newDiv = document.createElement("div");
+        newDiv.classList.add("item");
+        var droppedImage = new Image();
+        droppedImage.src = element.src;
+        newDiv.appendChild(droppedImage);
+
+        // Append the new div to the second container
+        event.target.appendChild(newDiv);
+    } else {
+        // Create a new div to hold the text
+        var newTextDiv = document.createElement("div");
+        newTextDiv.classList.add("item");
+        newTextDiv.textContent = data;
+
+        // Append the new div to the second container
+        event.target.appendChild(newTextDiv);
+    }
+
+    // Remove the dropped element from Container 1
+    element.parentNode.removeChild(element);
+
+    // Update UI or display success message
+    var successMessage = document.getElementById("successMessage");
+    successMessage.style.display = "block";
+}
+
+        
+        function resetContainers() {
+            var firstContainer = document.querySelector(".container > div:first-child");
+            var secondContainer = document.querySelector(".container > div:last-child");
+            
+            // Clear the second container
+            while (secondContainer.firstChild) {
+                secondContainer.removeChild(secondContainer.firstChild);
+            }
+            
+            // Reset the first container
+            var originalFirstContainerContent = document.getElementById("originalFirstContainerContent").innerHTML;
+            firstContainer.innerHTML = originalFirstContainerContent;
+            
+            // Hide the success message
+            var successMessage = document.getElementById("successMessage");
+            successMessage.style.display = "none";
+        }
+    </script>
+</head>
+<body>
+    <nav>
+        <h2 class="Navbar">Ankur Yadav</h2>
+    </nav>
+    <div class="container">
+        <div>
+            <!-- List of items in the first container -->
+            <h2>Container 1</h2>
+            <div class="item" id="item1" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+                <img src="image1.jpg" alt="Image 1">
+                <p>Item 1</p>
+            </div>
+            <div class="item" id="item2" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+                <img src="image2.jpg" alt="Image 2">
+                <p>Item 2</p>
+            </div>
+            <div class="item" id="item3" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+                <img src="image3.jpg" alt="Image 3">
+                <p>Item 3</p>
+            </div>
+        </div>
+        <div ondrop="drop(event)" ondragover="allowDrop(event)">
+            
+            <h2>Container 2</h2>
+            <p id="successMessage" style="display: none;">Item dropped successfully!</p>
+        </div>
+    </div>
+    
+    <!-- Reset button -->
+    <button class="Resetbtn" onclick="resetContainers()">Reset</button>
+    
+    <div id="originalFirstContainerContent" style="display: none;">
+        <h3>Container 1 </h3>
+        <div class="item" id="item1" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+            <img src="image1.jpg" alt="Image 1">
+            <p>Item 1</p>
+        </div>
+        <div class="item" id="item2" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+            <img src="image2.jpg" alt="Image 2">
+            <p></p>
+        </div>
+        <div class="item" id="item3" draggable="true" ondragstart="drag(event)" ondragend="dragEnd(event)">
+            <img src="image3.jpg" alt="Image 3">
+            <p>Item 3</p>
+        </div>
+    </div>
+</body>
+</html>
